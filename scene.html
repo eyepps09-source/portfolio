@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <title>Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+
+  <!-- โหลด Three.js และ OrbitControls -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <script>
+    (() => {
+      // --- สร้าง Scene ---
+      const scene = new THREE.Scene();
+
+      // --- สร้างกล้อง Perspective ---
+      const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100);
+      camera.position.set(0, 1.2, 4);
+
+      // --- Renderer ---
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(innerWidth, innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // --- Controls (เม้าส์หมุนกล้อง) ---
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 0.5, 0);
+      controls.enableDamping = true;
+
+      // --- พื้นกริด ---
+      const grid = new THREE.GridHelper(10, 10, 0x666666, 0x333333);
+      grid.position.y = -0.001;
+      scene.add(grid);
+
+      // --- วัตถุชิ้นเดียว: 
+      const box = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshBasicMaterial({ color: 0xff6600 })
+      );
+      box.position.set(0, 0.5, 0);
+      scene.add(box);
+
+      // --- Render Loop ---
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // --- Responsive Resize ---
+      window.addEventListener('resize', () => {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
+      });
+    })();
+  </script>
+</body>
+</html
